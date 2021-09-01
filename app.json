@@ -1,0 +1,12 @@
+{
+  "name": "POGRN Hybrid",
+  "displayName": "POGRN Hybrid",
+  "expo": {
+    "ios": {
+      "bundleIdentifier": "com.app.myapp",
+      "infoPlist": {
+        "NSLocationAlwaysUsageDescription": "Not using Location Data"
+      }
+    },
+      "sdkVersion": "18.0.0"}
+}
