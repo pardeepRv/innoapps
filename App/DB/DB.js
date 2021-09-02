@@ -1,6 +1,9 @@
 // Static Data Schema
 //===================
 
+const Realm = require("realm");
+
+
 class Property extends Realm.Object {}
 Property.schema = {
   name: 'Property',
