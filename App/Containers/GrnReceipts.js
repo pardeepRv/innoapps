@@ -56,7 +56,7 @@ class GrnReceipts extends Component {
   // MARK: Api
   async getReceiptApi() {
     this.setState({
-      isLoading: false,
+      isLoading: true,
     });
   //this.api = API.create();
     // api = new API.create();
@@ -111,44 +111,42 @@ class GrnReceipts extends Component {
     console.tron.log("New ENV URL RECEIPTS ", envURL);
   }
 
-
-
-
     const api = API.create(envURL);
     console.tron.log("New ENV URL RECEIPTS WORKING??? ", envURL);
     const username = await Utils.retrieveDataFromAsyncStorage("USER_NAME");
     const response = await api.getReceipts(username);
     const receipts = response.data.items;
-    console.tron.log("Receipts: ", receipts);
+    console.log("Receipts: ", receipts);
 
     // Save to DB
     await DBGrnReceiptDataHelper.saveReceipts(receipts);
-
-    this.setState({
-      isLoading: false,
-    });
 
     setTimeout(() => {
       this.getDBGrnReceipt();
     }, 100)
 
-
   }
 
   async getDBGrnReceipt() {
+
 
     this.setState({
         dataObjects:[]
     });
         // Retrieve from DB
     let dbReceipts = await DBGrnReceiptDataHelper.getReceipts();
-    console.tron.log("DB r: ", dbReceipts);
+    console.log("All receipts>>>> ", dbReceipts);
 
         dbReceipts.map((receipt) => {
+          console.log(receipt,'in loop>>>');
           if (receipt.quantity > 0) {
           this.state.dataObjects.push(receipt)
         }
       })
+      this.setState({
+        isLoading: false,
+      });
+  
   }
 
   /************************************************************

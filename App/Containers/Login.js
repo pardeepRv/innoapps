@@ -9,7 +9,7 @@ import {
   TextInput,
   ActivityIndicator,
   Alert,
-  Image
+  Image,
 } from "react-native";
 import Spinner from "react-native-loading-spinner-overlay";
 import { connect } from "react-redux";
@@ -32,225 +32,218 @@ import { AsyncStorage } from "react-native";
 
 class Login extends Component {
   api = {};
- 
- 
 
   constructor(props) {
     super(props);
     this.api = API.create();
     //apisauce = newApi;
-  
-
-    
 
     this.state = {
-      username: "",
-      password: "",
-      environment:"",
-      envURL:"",
+      username: "RVTechnologies.User1",
+      password: "D3v3l0PmenT1",
+      environment: "PDEV2",
+      envURL: "",
       isLoading: false,
-      isChecked: false
+      isChecked: false,
     };
 
     this.checkRememberMe();
-
   }
 
-  componentDidMount(){
-    this.checkTimeOut()
+  componentDidMount() {
+    this.checkTimeOut();
   }
 
-  async getEnvironment(){
-    
+  async getEnvironment() {
+    debugger;
     if (!this.state.environment) {
       Alert.alert("", "Please enter an environment.", [{ text: "OK" }], {
-        cancelable: false
+        cancelable: false,
       });
-    }else {
-      this.setState({ isLoading: false });
+    } else {
+      this.setState({ isLoading: true });
       const envparam = [this.state.environment];
       module.exports = envparam;
-  
+
       Utils.storeDataToAsyncStorage("ENVIRONMENT", this.state.environment);
       console.tron.log("Environment Variable ", envparam);
-      const environment = await Utils.retrieveDataFromAsyncStorage("ENVIRONMENT");
+      const environment = await Utils.retrieveDataFromAsyncStorage(
+        "ENVIRONMENT"
+      );
       console.tron.log("Environment Variable (API) ", environment);
       //console.tron.log("Original baseURL", API.create(baseURL));
-     // envURL = "";
-      if (environment == 'SKAD3')
-      {
+      // envURL = "";
+      if (environment == "SKAD3") {
         console.tron.log("INTO IF");
-        envURL = "https://skad3a1-skanskapaas.inoappsproducts.com/ords/inoapps_ec/";
+        envURL =
+          "https://skad3a1-skanskapaas.inoappsproducts.com/ords/inoapps_ec/";
         console.tron.log("New ENV URL ", envURL);
         this.api = new API.create(envURL);
         console.tron.log(this.api, "LETS GOOOO");
-        
-      }else if (environment == 'SKAD2'){
-        envURL = "https://skad2a1-skanskapaas.inoappsproducts.com/ords/inoapps_ec/";
+      } else if (environment == "SKAD2") {
+        envURL =
+          "https://skad2a1-skanskapaas.inoappsproducts.com/ords/inoapps_ec/";
         console.tron.log("New ENV URL ", envURL);
         this.api = new API.create(envURL);
-
-      }else if (environment == 'SKAD1'){
-        envURL = "https://skad1a1-skanskapaas.inoappsproducts.com/ords/inoapps_ec/";
+      } else if (environment == "SKAD1") {
+        envURL =
+          "https://skad1a1-skanskapaas.inoappsproducts.com/ords/inoapps_ec/";
         console.tron.log("New ENV URL ", envURL);
         this.api = new API.create(envURL);
-
-    }else if (environment == 'SKAT1'){
-      envURL = "https://skat1a1-skanskapaas.inoappsproducts.com/ords/inoapps_ec/";
-      console.tron.log("New ENV URL ", envURL);
-      this.api = new API.create(envURL);
-
-    }else if (environment == 'PTEST2'){
-      envURL = "https://ptest2a1-inoapps4.inoapps.com/ords/inoapps_ec/";
-      console.tron.log("New ENV URL ", envURL);
-      this.api = new API.create(envURL);
-
-    }else if (environment == 'PDEV2'){
-      envURL = "https://pdev2a1-inoapps4.inoapps.com/ords/inoapps_ec/";
-      console.tron.log("New ENV URL ", envURL);
-     // this.api = new API.create(envURL);
-
-    }else if (environment == 'PDEV1'){
-      envURL = "https://pdev1a1-inoapps4.inoapps.com/ords/inoapps_ec/";
-      console.tron.log("New ENV URL ", envURL);
-
-    }else if (environment == 'PTEST1'){
-      envURL = "https://ptest1a1-inoapps4.inoapps.com/ords/inoapps_ec/";
-      console.tron.log("New ENV URL ", envURL);
-      this.api = new API.create(envURL);
+      } else if (environment == "SKAT1") {
+        envURL =
+          "https://skat1a1-skanskapaas.inoappsproducts.com/ords/inoapps_ec/";
+        console.tron.log("New ENV URL ", envURL);
+        this.api = new API.create(envURL);
+      } else if (environment == "PTEST2") {
+        envURL = "https://ptest2a1-inoapps4.inoapps.com/ords/inoapps_ec/";
+        console.tron.log("New ENV URL ", envURL);
+        this.api = new API.create(envURL);
+      } else if (environment == "PDEV2") {
+        envURL = "https://pdev2a1-inoapps4.inoapps.com/ords/inoapps_ec/";
+        console.tron.log("New ENV URL ", envURL);
+        this.api = new API.create(envURL);
+      } else if (environment == "PDEV1") {
+        envURL = "https://pdev1a1-inoapps4.inoapps.com/ords/inoapps_ec/";
+        console.tron.log("New ENV URL ", envURL);
+      } else if (environment == "PTEST1") {
+        envURL = "https://ptest1a1-inoapps4.inoapps.com/ords/inoapps_ec/";
+        console.tron.log("New ENV URL ", envURL);
+        this.api = new API.create(envURL);
+      }
+      this.setState({
+        isLoading:false
+      })
+      //  return envURL;
+      this.getLogin();
     }
-   // return envURL;
-
   }
-}
 
   checkTimeOut = async () => {
-        var currentDate = new Date();
-        const username = await Utils.retrieveDataFromAsyncStorage("user_name");
+    var currentDate = new Date();
+    const username = await Utils.retrieveDataFromAsyncStorage("user_name");
 
-         if (username == undefined || username == null || username == " ") {
+    if (username == undefined || username == null || username == " ") {
+    } else {
+      //const expirationTime = await Utils.retrieveDataFromAsyncStorage("expiration_time");
+      // const midnightLogout = await Utils.retrieveDataFromAsyncStorage("MIDNIGHT_LOGOUT");
+      //const loginTime = await Utils.retrieveDataFromAsyncStorage("LOGIN_TIME");
+      const moment = require("moment");
 
-         } else {
-           //const expirationTime = await Utils.retrieveDataFromAsyncStorage("expiration_time");
-          // const midnightLogout = await Utils.retrieveDataFromAsyncStorage("MIDNIGHT_LOGOUT");
-           //const loginTime = await Utils.retrieveDataFromAsyncStorage("LOGIN_TIME");
-           const moment = require('moment')
+      if (expirationTime && loginTime && midnightLogout) {
+        var currentDateTime = currentDate.getTime();
+        var loginDate = new Date(loginTime);
+        var loginDateTime = loginDate.getTime();
+        var duration = (currentDateTime - loginDateTime) / 1000;
 
-          if (expirationTime && loginTime && midnightLogout){
-
-            var currentDateTime = currentDate.getTime();
+        if (duration > expirationTime) {
+          console.tron.log("Time Out !!, do Logout");
+        } else {
+          if (midnightLogout === "Y") {
+            var currentDay = currentDate.getDate();
             var loginDate = new Date(loginTime);
-            var loginDateTime = loginDate.getTime();
-            var duration = (currentDateTime - loginDateTime) / 1000;
+            var loginDay = loginDate.getDate();
 
-            if (duration > expirationTime) {
-              console.tron.log("Time Out !!, do Logout");
-
-            }else {
-            if (midnightLogout === "Y") {
-                var currentDay = currentDate.getDate();
-                var loginDate = new Date(loginTime);
-                var loginDay = loginDate.getDate();
-
-              if (currentDay > loginDay){
-                  console.tron.log("Midnight Time Out!!! Stay in Log in Page ");
-              }else {
-                  this.props.navigation.navigate("Drawer");
-             }
-           }
+            if (currentDay > loginDay) {
+              console.tron.log("Midnight Time Out!!! Stay in Log in Page ");
+            } else {
+              this.props.navigation.navigate("Drawer");
+            }
           }
         }
       }
-    };
+    }
+  };
 
-    forceLogin(){
-
-        Utils.storeDataToAsyncStorage("USER_NAME","SHAMEER.KAPPIL@INOAPPS.COM")
-        this.getReplaceReason().then(() => {
-          this.getStaticData().then(() => {
-            this.getUsageType().then(() => {
-              this.setState({ isLoading: false });
-                setTimeout(() => {
-                  this.props.navigation.navigate("Drawer");
-                }, 100);
-              });
-            });
-          });
-        }
-
+  forceLogin() {
+    Utils.storeDataToAsyncStorage("USER_NAME", "SHAMEER.KAPPIL@INOAPPS.COM");
+    this.getReplaceReason().then(() => {
+      this.getStaticData().then(() => {
+        this.getUsageType().then(() => {
+          this.setState({ isLoading: false });
+          setTimeout(() => {
+            this.props.navigation.navigate("Drawer");
+          }, 100);
+        });
+      });
+    });
+  }
 
   // MARK: API
 
-
   getLogin() {
-    
+    debugger;
     if (!this.state.username) {
       Alert.alert("", "Please enter a username.", [{ text: "OK" }], {
-        cancelable: false
+        cancelable: falses,
       });
     } else if (!this.state.password) {
       Alert.alert("", "Please enter a password.", [{ text: "OK" }], {
-        cancelable: false
+        cancelable: false,
       });
     } else {
-      this.setState({ isLoading: false });
+      this.setState({ isLoading: true });
       const params = [this.state.username, this.state.password];
-     
 
-      this.api["getLogin"].apply(this, params).then(result => {
+      this.api["getLogin"].apply(this, params).then((result) => {
+
+        console.log("Response API ok: ", result);
+
         if (result.ok) {
-          console.tron.log("Response API ok: ", result.data);
 
           if (result.data.user_name) {
-            Utils.storeDataToAsyncStorage("USER_NAME",result.data.user_name).then(() => {
-           //   Utils.storeDataToAsyncStorage("expiration_time",result.data.expirationn_time).then(() => {
-                //Utils.storeDataToAsyncStorage("MIDNIGHT_LOGOUT",result.data.MIDNIGHT_LOGOUT).then(() => {
-                 // Utils.storeDataToAsyncStorage("PROD_CONFIG_ACCESS", result.data.PROD_CONFIG_ACCESS).then(() => {
-                  //  Utils.storeDataToAsyncStorage("GRN_ACCESS", result.data.GRN_ACCESS).then(() => {
-                    //  Utils.storeDataToAsyncStorage("PASSWORD",this.state.password).then(() => {
-                       // Utils.storeDataToAsyncStorage("REMEMBER_ME",this.state.isChecked).then(() => {
-                       //   Utils.storeDataToAsyncStorage("LOGIN_TIME", new Date()).then(() => {
-                          //  this.getReplaceReason().then(() => {
-                              //this.getStaticData().then(() => {
-                             //   this.getUsageType().then(() => {
-                                  this.setState({ isLoading: false });
-                                    setTimeout(() => {
-                                      this.props.navigation.navigate("Drawer");
-                                    }, 100);
-                                  });
-                                //});
-                            //  });
-                           // })
-                         // })
-                     //   })
-                    //  })
-                   // })
-                 // })
-                //})
-              //})
-            } else {
-              //Utils.storeDataToAsyncStorage("USER_NAME",result.data.USER_NAME).then(() =>{
-             // this.props.navigation.navigate("Drawer");})
-             setTimeout(() => {
-                Alert.alert(
-                  "",
-                  "Invalid username and password.",
-                  [{ text: "OK" }],
-                  { cancelable: false }
-                );
+            Utils.storeDataToAsyncStorage(
+              "USER_NAME",
+              result.data.user_name
+            ).then(() => {
+              //   Utils.storeDataToAsyncStorage("expiration_time",result.data.expirationn_time).then(() => {
+              //Utils.storeDataToAsyncStorage("MIDNIGHT_LOGOUT",result.data.MIDNIGHT_LOGOUT).then(() => {
+              // Utils.storeDataToAsyncStorage("PROD_CONFIG_ACCESS", result.data.PROD_CONFIG_ACCESS).then(() => {
+              //  Utils.storeDataToAsyncStorage("GRN_ACCESS", result.data.GRN_ACCESS).then(() => {
+              //  Utils.storeDataToAsyncStorage("PASSWORD",this.state.password).then(() => {
+              // Utils.storeDataToAsyncStorage("REMEMBER_ME",this.state.isChecked).then(() => {
+              //   Utils.storeDataToAsyncStorage("LOGIN_TIME", new Date()).then(() => {
+              //  this.getReplaceReason().then(() => {
+              //this.getStaticData().then(() => {
+              //   this.getUsageType().then(() => {
+              this.setState({ isLoading: false });
+              setTimeout(() => {
+                this.props.navigation.navigate("Drawer");
               }, 100);
-
-            }
+            });
+            //});
+            //  });
+            // })
+            // })
+            //   })
+            //  })
+            // })
+            // })
+            //})
+            //})
           } else {
-            this.setState({ isLoading: false });
+            //Utils.storeDataToAsyncStorage("USER_NAME",result.data.USER_NAME).then(() =>{
+            // this.props.navigation.navigate("Drawer");})
             setTimeout(() => {
-              console.tron.log(
-                "Response API: failed",
-                result.status + " - " + result.problem
+              Alert.alert(
+                "",
+                "Invalid username and password.",
+                [{ text: "OK" }],
+                { cancelable: false }
               );
+            }, 100);
+          }
+        } else {
+          this.setState({ isLoading: false });
+          setTimeout(() => {
+            console.log(
+              "Response API: failed",
+              result.status + " - " + result.problem
+            );
             Alert.alert(
               "Oops",
-              "There seems to be a problem with then connection. Please try again later.",
+              // "There seems to be a problem with then connection. Please try again later.",
+              "Please check the enviroment and login details.",
               [{ text: "OK" }],
               { cancelable: false }
             );
@@ -267,7 +260,7 @@ class Login extends Component {
     //const password = await Utils.retrieveDataFromAsyncStorage("PASSWORD");
     //const rememberMe = await Utils.retrieveDataFromAsyncStorage("REMEMBER_ME");
 
-  /*  if (rememberMe && username) {
+    /*  if (rememberMe && username) {
       this.setState({
         username: username,
         isChecked: rememberMe,
@@ -309,13 +302,13 @@ class Login extends Component {
     if (response.ok) {
       console.tron.log("Response API ok: ", response);
       await DBPCStaticDataHelper.saveReplaceReasons(response.data.items);
-      return
+      return;
     } else {
       console.tron.log(
         "Response API: failed",
         response.status + " - " + response.problem
       );
-      return
+      return;
     }
   };
 
@@ -339,15 +332,13 @@ class Login extends Component {
       <SafeAreaView style={styles.container}>
         <Spinner visible={this.state.isLoading} />
         <View style={styles.logoContainer}>
-            <Image source={Images.inoappsLogo} style={styles.inoappsLogo}>
-</Image>
-            </View>
+          <Image source={Images.inoappsLogo} style={styles.inoappsLogo}></Image>
+        </View>
         <View style={styles.container}>
           <ImageBackground
             source={Images.loginBackground}
             style={styles.backgroundImage}
           >
-            
             <View style={styles.centerView}>
               <View style={styles.inputView}>
                 <Text style={styles.title}>ENVIRONMENT</Text>
@@ -355,27 +346,23 @@ class Login extends Component {
                   style={styles.input}
                   placeholder="Enter the environment"
                   value={this.state.environment}
-                  onChangeText={text => this.setState({ environment: text })}
+                  onChangeText={(text) => this.setState({ environment: text })}
                 />
               </View>
-              
-              
+
               <View style={styles.lineView} />
 
-           
               <View style={styles.inputView}>
                 <Text style={styles.title}>USERNAME</Text>
                 <TextInput
                   style={styles.input}
                   placeholder="Enter your username"
                   value={this.state.username}
-                  onChangeText={text => this.setState({ username: text })}
+                  onChangeText={(text) => this.setState({ username: text })}
                 />
               </View>
 
               <View style={styles.lineView} />
-
-
 
               <View style={styles.inputView}>
                 <Text style={styles.title}>PASSWORD</Text>
@@ -384,16 +371,16 @@ class Login extends Component {
                   placeholder="Enter your password"
                   secureTextEntry={true}
                   value={this.state.password}
-                  onChangeText={text => this.setState({ password: text })}
+                  onChangeText={(text) => this.setState({ password: text })}
                 />
               </View>
 
               <View style={styles.checkboxView}>
                 <CheckBox
                   checkboxStyle={styles.checkbox}
-                  onChange={checked =>
+                  onChange={(checked) =>
                     this.setState({
-                      isChecked: !this.state.isChecked
+                      isChecked: !this.state.isChecked,
                     })
                   }
                   checked={this.state.isChecked}
@@ -405,7 +392,6 @@ class Login extends Component {
                 onPress={() => {
                   this.getEnvironment();
                   //this.checkEnvironment();
-                  this.getLogin();
                 }}
                 style={styles.loginButton}
               >
@@ -413,29 +399,20 @@ class Login extends Component {
                   <Text style={styles.loginText}>LOGIN</Text>
                 </View>
               </TouchableOpacity>
-              </View>
-            
-            
+            </View>
           </ImageBackground>
-          
         </View>
       </SafeAreaView>
     );
   }
 }
 
-
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {};
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {};
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Login);
-
-
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

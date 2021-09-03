@@ -8,11 +8,13 @@ import Utils from "../Utils/Utils";
 // our "constructor"
 const create = (
   //newURL = "",
-  //baseURL = "https://test.com/",
-baseURL = Config.BASE_URL,
-newURL = baseURL,
-//baseURL = Environment.envURL,
-//baseURL = Utils.retrieveDataFromAsyncStorage("ENVIRONMENT"),
+  // baseURL = "https://pdev2a1-inoapps4.inoapps.com/ords/inoapps_ec/",
+
+  baseURL = Config.BASE_URL, //commented by pardeep
+
+  // newURL = baseURL,
+// baseURL = Environment.envURL,
+// baseURL = Utils.retrieveDataFromAsyncStorage("ENVIRONMENT"),
 
 ) => {
 
