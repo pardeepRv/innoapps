@@ -7,7 +7,7 @@ import {
   Image,
   FlatList,
   ActivityIndicator,
-  TouchableHighlight
+  TouchableHighlight,
 } from "react-native";
 import { connect } from "react-redux";
 import { Images } from "../Themes";
@@ -30,123 +30,128 @@ import FJSON from "format-json";
 class GrnReceipts extends Component {
   api = {};
   static navigationOptions = {
-    title: "RECEIPTS"
+    title: "RECEIPTS",
   };
-  
+
   constructor(props) {
     super(props);
     this.api = API.create();
 
     this.state = {
       isLoading: false,
-      dataObjects:[],
-      envURL:""
+      dataObjects: [],
+      envURL: "",
     };
   }
 
-  componentDidMount() {
+ async componentDidMount() {
+
+    // let userInfo = await DBGrnReceiptDataHelper.saveUserInfo();
+    // console.log("All userInfouserInfouserInfo>>>> ", userInfo);
+
+
     this.refreshPayload();
   }
 
   refreshPayload = () => {
     this.getReceiptApi();
-
-  }
+  };
 
   // MARK: Api
   async getReceiptApi() {
+    debugger;
     this.setState({
       isLoading: true,
     });
-  //this.api = API.create();
+    //this.api = API.create();
     // api = new API.create();
     //api = {};
-    
-    const environment = await Utils.retrieveDataFromAsyncStorage("ENVIRONMENT");
-    console.tron.log("Environment Variable (API) ", environment);
-    //console.tron.log("Original baseURL", API.create(baseURL));
-   // envURL = "";
-    if (environment == 'SKAD3')
-    {
-      console.tron.log("INTO IF");
-      envURL = "https://skad3a1-skanskapaas.inoappsproducts.com/ords/inoapps_ec/";
-      console.tron.log("New ENV URL ", envURL);
-      //this.api = new API.create(envURL);
-      console.tron.log(this.api, "LETS GOOOO");
-      
-    }else if (environment == 'SKAD2'){
-      envURL = "https://skad2a1-skanskapaas.inoappsproducts.com/ords/inoapps_ec/";
-      console.tron.log("New ENV URL ", envURL);
-     // this.api = new API.create(envURL);
 
-    }else if (environment == 'SKAD1'){
-      envURL = "https://skad1a1-skanskapaas.inoappsproducts.com/ords/inoapps_ec/";
-      console.tron.log("New ENV URL ", envURL);
-      //this.api = new API.create(envURL);
+    try {
+      const environment = await Utils.retrieveDataFromAsyncStorage(
+        "ENVIRONMENT"
+      );
+      console.tron.log("Environment Variable (API) ", environment);
+      //console.tron.log("Original baseURL", API.create(baseURL));
+      // envURL = "";
+      if (environment == "SKAD3") {
+        console.tron.log("INTO IF");
+        envURL =
+          "https://skad3a1-skanskapaas.inoappsproducts.com/ords/inoapps_ec/";
+        console.tron.log("New ENV URL ", envURL);
+        //this.api = new API.create(envURL);
+        console.tron.log(this.api, "LETS GOOOO");
+      } else if (environment == "SKAD2") {
+        envURL =
+          "https://skad2a1-skanskapaas.inoappsproducts.com/ords/inoapps_ec/";
+        console.tron.log("New ENV URL ", envURL);
+        // this.api = new API.create(envURL);
+      } else if (environment == "SKAD1") {
+        envURL =
+          "https://skad1a1-skanskapaas.inoappsproducts.com/ords/inoapps_ec/";
+        console.tron.log("New ENV URL ", envURL);
+        //this.api = new API.create(envURL);
+      } else if (environment == "SKAT1") {
+        envURL =
+          "https://skat1a1-skanskapaas.inoappsproducts.com/ords/inoapps_ec/";
+        console.tron.log("New ENV URL ", envURL);
+        //this.api = new API.create(envURL);
+      } else if (environment == "PTEST2") {
+        envURL = "https://ptest2a1-inoapps4.inoapps.com/ords/inoapps_ec/";
+        console.tron.log("New ENV URL ", envURL);
+        //this.api = new API.create(envURL);
+      } else if (environment == "PDEV2") {
+        envURL = "https://pdev2a1-inoapps4.inoapps.com/ords/inoapps_ec/";
+        // this.api = new API.create(envURL);
+        console.tron.log("New ENV URL RECEIPTS ", envURL);
+      } else if (environment == "PDEV1") {
+        envURL = "https://pdev1a1-inoapps4.inoapps.com/ords/inoapps_ec/";
+        // this.api = new API.create(envURL);
+        console.tron.log("New ENV URL RECEIPTS ", envURL);
+      } else if (environment == "PTEST1") {
+        envURL = "https://ptest1a1-inoapps4.inoapps.com/ords/inoapps_ec/";
+        // this.api = new API.create(envURL);
+        console.tron.log("New ENV URL RECEIPTS ", envURL);
+      }
 
-  }else if (environment == 'SKAT1'){
-    envURL = "https://skat1a1-skanskapaas.inoappsproducts.com/ords/inoapps_ec/";
-    console.tron.log("New ENV URL ", envURL);
-    //this.api = new API.create(envURL);
+      const api = API.create(envURL);
+      console.tron.log("New ENV URL RECEIPTS WORKING??? ", envURL);
+      const username = await Utils.retrieveDataFromAsyncStorage("USER_NAME");
+      const response = await api.getReceipts(username);
+      if (response && response.data != null) {
+        const receipts = response.data.items;
+        console.log("Receipts: ", receipts);
+        // Save to DB
+        await DBGrnReceiptDataHelper.saveReceipts(receipts);
+      }
 
-  }else if (environment == 'PTEST2'){
-    envURL = "https://ptest2a1-inoapps4.inoapps.com/ords/inoapps_ec/";
-    console.tron.log("New ENV URL ", envURL);
-    //this.api = new API.create(envURL);
-
-  }else if (environment == 'PDEV2'){
-    envURL = "https://pdev2a1-inoapps4.inoapps.com/ords/inoapps_ec/";
-   // this.api = new API.create(envURL);
-    console.tron.log("New ENV URL RECEIPTS ", envURL);
-  
-  
-  }else if (environment == 'PDEV1'){
-      envURL = "https://pdev1a1-inoapps4.inoapps.com/ords/inoapps_ec/";
-     // this.api = new API.create(envURL);
-      console.tron.log("New ENV URL RECEIPTS ", envURL);
-
-  }else if (environment == 'PTEST1'){
-    envURL = "https://ptest1a1-inoapps4.inoapps.com/ords/inoapps_ec/";
-   // this.api = new API.create(envURL);
-    console.tron.log("New ENV URL RECEIPTS ", envURL);
-  }
-
-    const api = API.create(envURL);
-    console.tron.log("New ENV URL RECEIPTS WORKING??? ", envURL);
-    const username = await Utils.retrieveDataFromAsyncStorage("USER_NAME");
-    const response = await api.getReceipts(username);
-    const receipts = response.data.items;
-    console.log("Receipts: ", receipts);
-
-    // Save to DB
-    await DBGrnReceiptDataHelper.saveReceipts(receipts);
-
-    setTimeout(() => {
-      this.getDBGrnReceipt();
-    }, 100)
-
+      setTimeout(() => {
+        this.getDBGrnReceipt();
+      }, 100);
+    } catch (error) {
+      console.log("coming inside error", error);
+    }
   }
 
   async getDBGrnReceipt() {
-
-
     this.setState({
-        dataObjects:[]
+      dataObjects: [],
     });
-        // Retrieve from DB
+    // Retrieve from DB
     let dbReceipts = await DBGrnReceiptDataHelper.getReceipts();
     console.log("All receipts>>>> ", dbReceipts);
 
-        dbReceipts.map((receipt) => {
-          console.log(receipt,'in loop>>>');
-          if (receipt.quantity > 0) {
-          this.state.dataObjects.push(receipt)
-        }
-      })
-      this.setState({
-        isLoading: false,
-      });
-  
+    dbReceipts.map((receipt) => {
+      console.log(receipt, "in loop>>>");
+      if (receipt.quantity > 0) {
+        this.state.dataObjects.push(receipt);
+      }
+    });
+    this.setState({
+      isLoading: false,
+    });
+
+    console.log(this.state.dataObjects, "this.state.dataObjects aftre ");
   }
 
   /************************************************************
@@ -155,7 +160,7 @@ class GrnReceipts extends Component {
    * Usually this should come from Redux mapStateToProps
    *************************************************************/
   state = {
-    dataObjects: []
+    dataObjects: [],
   };
 
   /* ***********************************************************
@@ -167,14 +172,14 @@ class GrnReceipts extends Component {
       return <MyCustomCell title={item.title} description={item.description} />
     *************************************************************/
 
-  renderRow = ({item, index }) => {
-    if (item.submitStatus == "processing"){
+  renderRow = ({ item, index }) => {
+    if (item.submitStatus == "processing") {
       return (
         <TouchableHighlight
           onPress={() =>
             this.props.navigation.navigate("GrnEditReceipt", {
               entityReceipt: item,
-              index: index
+              index: index,
             })
           }
         >
@@ -201,13 +206,13 @@ class GrnReceipts extends Component {
           </View>
         </TouchableHighlight>
       );
-    }else if (item.submitStatus == "pending"){
+    } else if (item.submitStatus == "pending") {
       return (
         <TouchableHighlight
           onPress={() =>
             this.props.navigation.navigate("GrnEditReceipt", {
               entityReceipt: item,
-              index: index
+              index: index,
             })
           }
         >
@@ -234,41 +239,41 @@ class GrnReceipts extends Component {
           </View>
         </TouchableHighlight>
       );
-    }else{
-    return (
-      <TouchableHighlight
-        onPress={() =>
-          this.props.navigation.navigate("GrnEditReceipt", {
-            entityReceipt: item,
-            index: index
-          })
-        }
-      >
-        <View>
-          <View style={styles.row}>
-            <View style={styles.rowSection1}>
-              <Text style={styles.rowLabel}>{item.order_number}</Text>
+    } else {
+      return (
+        <TouchableHighlight
+          onPress={() =>
+            this.props.navigation.navigate("GrnEditReceipt", {
+              entityReceipt: item,
+              index: index,
+            })
+          }
+        >
+          <View>
+            <View style={styles.row}>
+              <View style={styles.rowSection1}>
+                <Text style={styles.rowLabel}>{item.order_number}</Text>
+              </View>
+              <View style={styles.rowSection2}>
+                <Text style={styles.rowLabel}>{item.item_description}</Text>
+              </View>
+              <View style={styles.rowSection3}>
+                <Text style={styles.rowLabel3}>{item.receipt_num}</Text>
+              </View>
+              <View style={styles.rowSection4}>
+                <Image
+                  source={Images.rightArrow}
+                  style={styles.rightArrow}
+                  resizeMode="stretch"
+                />
+              </View>
             </View>
-            <View style={styles.rowSection2}>
-              <Text style={styles.rowLabel}>{item.item_description}</Text>
-            </View>
-            <View style={styles.rowSection3}>
-              <Text style={styles.rowLabel3}>{item.receipt_num}</Text>
-            </View>
-            <View style={styles.rowSection4}>
-              <Image
-                source={Images.rightArrow}
-                style={styles.rightArrow}
-                resizeMode="stretch"
-              />
-            </View>
+            <View style={styles.rowSeparatorLine} />
           </View>
-          <View style={styles.rowSeparatorLine} />
-        </View>
-      </TouchableHighlight>
-    );
+        </TouchableHighlight>
+      );
+    }
   };
- };
 
   /************************************************************
    * STEP 3
@@ -301,8 +306,8 @@ class GrnReceipts extends Component {
   render() {
     return (
       <View style={styles.container}>
-      <NavigationEvents
-          onWillFocus={payload => {
+        <NavigationEvents
+          onWillFocus={(payload) => {
             console.tron.log("will focus", payload);
             this.refreshPayload();
           }}
@@ -341,17 +346,14 @@ class GrnReceipts extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     // ...redux state to props here
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {};
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(GrnReceipts);
+export default connect(mapStateToProps, mapDispatchToProps)(GrnReceipts);

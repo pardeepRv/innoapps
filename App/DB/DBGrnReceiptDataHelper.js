@@ -451,6 +451,22 @@ let DBGrnReceiptDataHelper = {
   },
 
 
+  async saveUserInfo( ) {
+    console.log("Hit DB save data by me>>>>>>>>>>");
+
+    DB.write(() => {
+      const dataEntry = DB.objects("UserInfo");
+      DB.create("UserInfo", {
+        id:  Utils.guid(),
+        name:'pardeep kumar'
+      });
+    });
+
+    const dbUserInfo = DB.objects("UserInfo");
+    console.log("Db dbUserInfo: ", dbUserInfo);
+  },
+
+
 }
 
 module.exports = DBGrnReceiptDataHelper;

@@ -11,7 +11,7 @@ let DBGrnPurchaseOrderDataHelper = {
        /* DB.write(() =>{
           DB.delete(dbPurchaseOrders);
           })*/
-        console.tron.log("PRINT LOCAL Puchase Orders: ",dbPurchaseOrders);
+        console.log("PRINT LOCAL Puchase Orders: ",dbPurchaseOrders);
 
           if (dbPurchaseOrders != null) {
            
@@ -53,16 +53,16 @@ let DBGrnPurchaseOrderDataHelper = {
                   var duration = (newdate - dbPurchaseOrder.submittedTime)
 
                   if (dbPurchaseOrder.submittedTime != "" && dbPurchaseOrder.submittedTime != null){
-                    console.tron.log("duration: ", duration)
-                    console.tron.log("Submitted Time: ", dbPurchaseOrder.submittedTime)//1553837059628
-                    console.tron.log("New Date: ", newdate)
+                    console.log("duration: ", duration)
+                    console.log("Submitted Time: ", dbPurchaseOrder.submittedTime)//1553837059628
+                    console.log("New Date: ", newdate)
                   }
 
                   if (dbPurchaseOrder.submitStatus == "processing" , (dbPurchaseOrder.quantity_available_to_receive != po.quantity_available_to_receive || duration > 300000)){
                       if (dbPurchaseOrder.quantity_received != 0){
-                        console.tron.log("PROCESSING");
-                        console.tron.log("print local quantity: ", dbPurchaseOrder.quantity_received)
-                        console.tron.log("print API quantity: ", po.quantity_received)
+                        console.log("PROCESSING");
+                        console.log("print local quantity: ", dbPurchaseOrder.quantity_received)
+                        console.log("print API quantity: ", po.quantity_received)
                       }
 
                     DB.write(() => {
@@ -77,14 +77,14 @@ let DBGrnPurchaseOrderDataHelper = {
                       recToUpdate.comment = ""*/
                     });
                   }else if (dbPurchaseOrder.submitStatus == "pending") {
-                      console.tron.log("PENDING");
+                      console.log("PENDING");
                     /*do nothing*/
                   }else {
 
                     DB.write(() => {
                       dbPurchaseOrder.quantity_available_to_receive = po.quantity_available_to_receive
                     });
-                    console.tron.log("Db update quantity");
+                    console.log("Db update quantity");
                   }
               }
             };
@@ -112,7 +112,7 @@ let DBGrnPurchaseOrderDataHelper = {
         };
 
         if (!isPoExistsInLocalDB){
-            console.tron.log("Not Local Data");
+            console.log("Not Local Data");
               DB.write(async() => {
                 DB.create("PurchaseOrder", po);
             });
@@ -147,10 +147,10 @@ let DBGrnPurchaseOrderDataHelper = {
     
 
     const dbPurchaseOrders = DB.objects("PurchaseOrder");
-    console.tron.log("Hit DB delete data", dbPurchaseOrders);
+    console.log("Hit DB delete data", dbPurchaseOrders);
   },
   async deletePurchaseOrder() {
-    console.tron.log("Hit DB delete PO");
+    console.log("Hit DB delete PO");
     let dbPurchaseOrder = DB.objects("PurchaseOrder")
     if (dbPurchaseOrder != null) {
         DB.write(() => {
@@ -187,7 +187,7 @@ let DBGrnPurchaseOrderDataHelper = {
         if (quantity_received != null && quantity_received > 0) {
 
           DB.write(() => {
-            console.tron.log("DID UPDATE PO WHEN SUBMIT")
+            console.log("DID UPDATE PO WHEN SUBMIT")
               poToUpdate.edited = edited,
               poToUpdate.submitStatus = submitStatus,
               poToUpdate.submittedTime = submittedTime,
@@ -217,7 +217,7 @@ let DBGrnPurchaseOrderDataHelper = {
               });
           };
       }
-      console.tron.log("UPDATED PO:", poToUpdate)
+      console.log("UPDATED PO:", poToUpdate)
 
 
     return poToUpdate;
@@ -231,7 +231,7 @@ let DBGrnPurchaseOrderDataHelper = {
     submitStatus,
     submittedTime, comments, photoURL) {
 
-console.tron.log("Processing Submitted Time: ", submittedTime)
+console.log("Processing Submitted Time: ", submittedTime)
     var dbExistingPurchaseOrders = null;
 
     if (distribution_number && order_line_number) {
@@ -246,7 +246,7 @@ console.tron.log("Processing Submitted Time: ", submittedTime)
           poToUpdate.submitStatus = submitStatus,
           poToUpdate.submittedTime = submittedTime
       });
-  console.tron.log("Print Processing Edited:", poToUpdate)
+  console.log("Print Processing Edited:", poToUpdate)
     return poToUpdate;
   },
 
@@ -291,7 +291,7 @@ console.tron.log("Processing Submitted Time: ", submittedTime)
     unit_of_measure,
     distribution_number
   ) {
-    console.tron.log("Hit DB save data");
+    console.log("Hit DB save data");
 
     let id = Utils.guid()
 
@@ -322,21 +322,21 @@ console.tron.log("Processing Submitted Time: ", submittedTime)
     });
 
     const dbCreateReceipt = DB.objects("CreateReceipt");
-    console.tron.log("Db create receipt: ", dbCreateReceipt);
+    console.log("Db create receipt: ", dbCreateReceipt);
     return id;
   },
 
   async updateCreateReceiptFile(
     id,
     file_id) {
-    console.tron.log("Hit DB update data");
+    console.log("Hit DB update data");
 
     let dbUpdateReceipt = DB.objects("CreateReceipt").filtered('id == $0', id);
     let receiptToUpdate = dbUpdateReceipt[0];
     DB.write(() => {
       receiptToUpdate.file_id = file_id
     });
-    console.tron.log("Db update create receipt: ", dbUpdateReceipt);
+    console.log("Db update create receipt: ", dbUpdateReceipt);
     return receiptToUpdate;
   },
 
@@ -348,11 +348,11 @@ console.tron.log("Processing Submitted Time: ", submittedTime)
     submitStatus,
     submittedTime,
     quantity) {
-    console.tron.log("Hit DB update data");
+    console.log("Hit DB update data");
 
     let dbUpdateReceipt = DB.objects("CreateReceipt").filtered('order_number = $0 AND distribution_number == $1 AND order_line_number == $2', order_number, distribution_number, order_line_number);
-    console.tron.log("Db update create receipt : ", dbUpdateReceipt[0]);
-    console.tron.log(order_number,distribution_number,order_line_number,edited,submitStatus,submittedTime,quantity);
+    console.log("Db update create receipt : ", dbUpdateReceipt[0]);
+    console.log(order_number,distribution_number,order_line_number,edited,submitStatus,submittedTime,quantity);
 
     let receiptToUpdate = dbUpdateReceipt[0];
     if (quantity != null) {
@@ -373,7 +373,7 @@ console.tron.log("Processing Submitted Time: ", submittedTime)
   },
 
   async deleteCreateReceipt(id) {
-    console.tron.log("Hit DB delete data");
+    console.log("Hit DB delete data");
 
     let dbCreateReceipts = DB.objects("CreateReceipt").filtered('id == $0', id);
 
@@ -388,7 +388,7 @@ console.tron.log("Processing Submitted Time: ", submittedTime)
       /*  })*/
 
       });
-        console.tron.log("SUCCESFULLY DELETED");
+        console.log("SUCCESFULLY DELETED");
     }
 
   },
@@ -405,12 +405,12 @@ console.tron.log("Processing Submitted Time: ", submittedTime)
           DB.write(() => {
 
               DB.delete(receiptToDelete);
-              console.tron.log("Done remove RECEIPTS");
+              console.log("Done remove RECEIPTS");
           });
             return receiptToDelete;
         }
       } catch (e) {
-        console.tron.log(e); //uncaught
+        console.log(e); //uncaught
     }
   },
 

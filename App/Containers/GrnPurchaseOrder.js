@@ -59,73 +59,77 @@ class GrnPurchaseOrder extends React.PureComponent {
 
   // MARK: Api
   async getPurchaseOrderApi() {
+    console.log('coming inside by pardeep');
    
 
     const environment = await Utils.retrieveDataFromAsyncStorage("ENVIRONMENT");
-    console.tron.log("Environment Variable (API) ", environment);
-    //console.tron.log("Original baseURL", API.create(baseURL));
+    console.log("Environment Variable (API) ", environment);
+    //console.log("Original baseURL", API.create(baseURL));
     // envURL = "";
     if (environment == "SKAD3") {
-      console.tron.log("INTO IF");
+      console.log("INTO IF");
       envURL =
         "https://skad3a1-skanskapaas.inoappsproducts.com/ords/inoapps_ec/";
-      console.tron.log("New ENV URL ", envURL);
+      console.log("New ENV URL ", envURL);
       //this.api = new API.create(envURL);
-      console.tron.log(this.api, "LETS GOOOO");
+      console.log(this.api, "LETS GOOOO");
     } else if (environment == "SKAD2") {
       envURL =
         "https://skad2a1-skanskapaas.inoappsproducts.com/ords/inoapps_ec/";
-      console.tron.log("New ENV URL ", envURL);
+      console.log("New ENV URL ", envURL);
       // this.api = new API.create(envURL);
     } else if (environment == "SKAD1") {
       envURL =
         "https://skad1a1-skanskapaas.inoappsproducts.com/ords/inoapps_ec/";
-      console.tron.log("New ENV URL ", envURL);
+      console.log("New ENV URL ", envURL);
       //this.api = new API.create(envURL);
     } else if (environment == "SKAT1") {
       envURL =
         "https://skat1a1-skanskapaas.inoappsproducts.com/ords/inoapps_ec/";
-      console.tron.log("New ENV URL ", envURL);
+      console.log("New ENV URL ", envURL);
       //this.api = new API.create(envURL);
     } else if (environment == "PTEST2") {
       envURL = "https://ptest2a1-inoapps4.inoapps.com/ords/inoapps_ec/";
-      console.tron.log("New ENV URL ", envURL);
+      console.log("New ENV URL ", envURL);
       //this.api = new API.create(envURL);
     } else if (environment == "PDEV2") {
       envURL = "https://pdev2a1-inoapps4.inoapps.com/ords/inoapps_ec/";
       // this.api = new API.create(envURL);
-      console.tron.log("New ENV URL RECEIPTS ", envURL);
+      console.log("New ENV URL RECEIPTS ", envURL);
     } else if (environment == "PDEV1") {
       envURL = "https://pdev1a1-inoapps4.inoapps.com/ords/inoapps_ec/";
       // this.api = new API.create(envURL);
-      console.tron.log("New ENV URL RECEIPTS ", envURL);
+      console.log("New ENV URL RECEIPTS ", envURL);
     } else if (environment == "PTEST1") {
       envURL = "https://ptest1a1-inoapps4.inoapps.com/ords/inoapps_ec/";
       // this.api = new API.create(envURL);
-      console.tron.log("New ENV URL RECEIPTS ", envURL);
+      console.log("New ENV URL RECEIPTS ", envURL);
     }
 
     const api = API.create(envURL);
-    console.tron.log("New ENV URL PO WORKING??? ", envURL);
+    console.log("New ENV URL PO WORKING??? ", envURL);
 
     const username = await Utils.retrieveDataFromAsyncStorage("USER_NAME");
 
-    // const response = await api.getPurchaseOrders(username);
-    // const purchaseOrders = response.data.items;
-    // console.log("Purchase Orders: ", purchaseOrders);
+    const response = await api.getPurchaseOrders(username);
+    const purchaseOrders = response.data.items;
+    console.log("Purchase Orders: from api", purchaseOrders);
+
 
     // Save to DB
-    // await DBGrnPurchaseOrderDataHelper.savePurchaseOrders(purchaseOrders);
+    await DBGrnPurchaseOrderDataHelper.savePurchaseOrders(purchaseOrders);
 
     // this.setState({
     //   isLoading: false,
     // });
+
       this.getDBGrnPurchaseOrder();
 
     // this.setState({
     //   isLoading: true,
     //
     // })
+    
     // const api = API.create();
     // const username = await Utils.retrieveDataFromAsyncStorage("USER_NAME");
     // const response = await api.getPurchaseOrders(username);
@@ -136,7 +140,7 @@ class GrnPurchaseOrder extends React.PureComponent {
     //
     // setTimeout(async() => {
     //   const purchaseOrders = response.data.items;
-    //   console.tron.log("PurchaseOrders: ", purchaseOrders);
+    //   console.log("PurchaseOrders: ", purchaseOrders);
     //
     //   // Save to DB
     //   await DBGrnPurchaseOrderDataHelper.savePurchaseOrders(purchaseOrders);
@@ -146,6 +150,7 @@ class GrnPurchaseOrder extends React.PureComponent {
   }
 
   async getDBGrnPurchaseOrder() {
+    debugger
     this.setState({
       filteredPurchaseOrders: [],
       finalPOToDisplay: [],
@@ -154,7 +159,7 @@ class GrnPurchaseOrder extends React.PureComponent {
     let dbPurchaseOrders =
       await DBGrnPurchaseOrderDataHelper.getPurchaseOrders();
 
-    console.tron.log("DB purchase order: ", dbPurchaseOrders);
+    console.log("DB purchase order: from realm ", dbPurchaseOrders);
 
     dbPurchaseOrders.map((po) => {
       // filter out the status close po
@@ -162,10 +167,10 @@ class GrnPurchaseOrder extends React.PureComponent {
         if (po.quantity_available_to_receive > 0) {
           this.state.filteredPurchaseOrders.push(po);
         } else {
-          console.tron.log("sufficient quantity_available_to_receive");
+          console.log("sufficient quantity_available_to_receive");
         }
       } else {
-        console.tron.log("CLOSED FOR RECEIVING");
+        console.log("CLOSED FOR RECEIVING");
       }
     });
 
@@ -176,9 +181,9 @@ class GrnPurchaseOrder extends React.PureComponent {
     for (let i = 0; i < test.length; i++) {
       let po = test[i];
       if (this.checkPONoExist(this.state.finalPOToDisplay, po)) {
-        console.tron.log("Existing");
+        console.log("Existing");
       } else {
-        console.tron.log(po);
+        console.log(po);
         final.push(po);
       }
     }
@@ -313,7 +318,7 @@ class GrnPurchaseOrder extends React.PureComponent {
       <View style={styles.container}>
         <NavigationEvents
           onWillFocus={(payload) => {
-            console.tron.log("will focus", payload);
+            console.log("will focus", payload);
             this.refreshPayload();
           }}
         />

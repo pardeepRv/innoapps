@@ -39,9 +39,13 @@ class Login extends Component {
     //apisauce = newApi;
 
     this.state = {
-      username: "RVTechnologies.User1",
-      password: "D3v3l0PmenT1",
-      environment: "PDEV2",
+      // username: "RVTechnologies.User1",
+      // password: "D3v3l0PmenT1",
+      // environment: "PDEV2",
+
+      username: "",
+      password: "",
+      environment: "",
       envURL: "",
       isLoading: false,
       isChecked: false,
@@ -60,62 +64,67 @@ class Login extends Component {
       Alert.alert("", "Please enter an environment.", [{ text: "OK" }], {
         cancelable: false,
       });
+      return;
     } else {
-      this.setState({ isLoading: true });
+      // this.setState({ isLoading: true });
       const envparam = [this.state.environment];
       module.exports = envparam;
 
       Utils.storeDataToAsyncStorage("ENVIRONMENT", this.state.environment);
-      console.tron.log("Environment Variable ", envparam);
+      console.log("Environment Variable ", envparam);
       const environment = await Utils.retrieveDataFromAsyncStorage(
         "ENVIRONMENT"
       );
-      console.tron.log("Environment Variable (API) ", environment);
-      //console.tron.log("Original baseURL", API.create(baseURL));
-      // envURL = "";
+      console.log("Environment Variable (API) ", environment);
+      //console.log("Original baseURL", API.create(baseURL));
+      let envURL = "";
       if (environment == "SKAD3") {
-        console.tron.log("INTO IF");
+        console.log("INTO IF");
         envURL =
           "https://skad3a1-skanskapaas.inoappsproducts.com/ords/inoapps_ec/";
-        console.tron.log("New ENV URL ", envURL);
+        console.log("New ENV URL ", envURL);
         this.api = new API.create(envURL);
-        console.tron.log(this.api, "LETS GOOOO");
+        console.log(this.api, "LETS GOOOO");
       } else if (environment == "SKAD2") {
         envURL =
           "https://skad2a1-skanskapaas.inoappsproducts.com/ords/inoapps_ec/";
-        console.tron.log("New ENV URL ", envURL);
+        console.log("New ENV URL ", envURL);
         this.api = new API.create(envURL);
       } else if (environment == "SKAD1") {
         envURL =
           "https://skad1a1-skanskapaas.inoappsproducts.com/ords/inoapps_ec/";
-        console.tron.log("New ENV URL ", envURL);
+        console.log("New ENV URL ", envURL);
         this.api = new API.create(envURL);
       } else if (environment == "SKAT1") {
         envURL =
           "https://skat1a1-skanskapaas.inoappsproducts.com/ords/inoapps_ec/";
-        console.tron.log("New ENV URL ", envURL);
+        console.log("New ENV URL ", envURL);
         this.api = new API.create(envURL);
       } else if (environment == "PTEST2") {
         envURL = "https://ptest2a1-inoapps4.inoapps.com/ords/inoapps_ec/";
-        console.tron.log("New ENV URL ", envURL);
+        console.log("New ENV URL ", envURL);
         this.api = new API.create(envURL);
       } else if (environment == "PDEV2") {
         envURL = "https://pdev2a1-inoapps4.inoapps.com/ords/inoapps_ec/";
-        console.tron.log("New ENV URL ", envURL);
+        console.log("New ENV URL ", envURL);
         this.api = new API.create(envURL);
       } else if (environment == "PDEV1") {
         envURL = "https://pdev1a1-inoapps4.inoapps.com/ords/inoapps_ec/";
-        console.tron.log("New ENV URL ", envURL);
+        console.log("New ENV URL ", envURL);
       } else if (environment == "PTEST1") {
         envURL = "https://ptest1a1-inoapps4.inoapps.com/ords/inoapps_ec/";
-        console.tron.log("New ENV URL ", envURL);
+        console.log("New ENV URL ", envURL);
+        this.api = new API.create(envURL);
+      } else {
+        envURL = "https://www.google.com";
+        console.log("New ENV URL ", envURL);
         this.api = new API.create(envURL);
       }
       this.setState({
-        isLoading:false
-      })
+        isLoading: false,
+      });
       //  return envURL;
-      this.getLogin();
+      this.getLogin(envURL);
     }
   }
 
@@ -171,14 +180,20 @@ class Login extends Component {
 
   // MARK: API
 
-  getLogin() {
-    debugger;
+  getLogin(envURL) {
+      console.log(envURL, "in login fun");
+
+    if (envURL == "https://www.google.com") {
+      return alert("Please enter right Environment!");
+    }
     if (!this.state.username) {
-      Alert.alert("", "Please enter a username.", [{ text: "OK" }], {
-        cancelable: falses,
+      this.setState({ isLoading: false });
+      return Alert.alert("", "Please enter a username.", [{ text: "OK" }], {
+        cancelable: false,
       });
     } else if (!this.state.password) {
-      Alert.alert("", "Please enter a password.", [{ text: "OK" }], {
+      this.setState({ isLoading: false });
+      return Alert.alert("", "Please enter a password.", [{ text: "OK" }], {
         cancelable: false,
       });
     } else {
@@ -186,11 +201,9 @@ class Login extends Component {
       const params = [this.state.username, this.state.password];
 
       this.api["getLogin"].apply(this, params).then((result) => {
-
         console.log("Response API ok: ", result);
-
+        this.setState({ isLoading: false });
         if (result.ok) {
-
           if (result.data.user_name) {
             Utils.storeDataToAsyncStorage(
               "USER_NAME",
